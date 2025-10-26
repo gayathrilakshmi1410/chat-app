@@ -4,7 +4,7 @@ import ChatBox from "../components/chat/ChatBox";
 import { ChatContext } from "../context/ChatContext";
 import UserChat from "../components/chat/UserChat";
 import { AuthContext } from "../context/AuthContext";
-import PotentialChats from "../components/chat/potentialChats";
+import PotentialChats from "../components/chat/PotentialChats";
 
 
 
