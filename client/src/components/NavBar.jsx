@@ -11,7 +11,7 @@ const NavBar = () => {
     <Navbar bg="dark" className="mb-4" style={{height:"3.75rem"}}>
         <Container>
             <h2>
-                <Link to="/" className="link-light text-decoration-none">Chatapp</Link>
+                <Link to="/" className="link-light text-decoration-none">AuraLink</Link>
             </h2>
            {user && (<span className="text-warning">Logged in as {user?.name}</span>)}
             <Nav>
