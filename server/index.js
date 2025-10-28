@@ -5,6 +5,7 @@ const {Server} = require("socket.io");
 const userRoute=require("./Routes/userRoute");
 const chatRoute=require("./Routes/chatRoute");
 const messageRoute=require("./Routes/messageRoute");
+const Message = require("./Models/messageModel");
 const app = express();
 require("dotenv").config();
 app.use(express.json());
@@ -69,6 +70,30 @@ io.on("connection", (socket) => {
       });
     }
   });
+
+
+// 🗑 Delete a single message
+socket.on("deleteMessage", async (msgId) => {
+  try {
+    await Message.findByIdAndDelete(msgId);
+    io.emit("messageDeleted", msgId); // ✅ renamed event to avoid conflict
+    console.log("Deleted message:", msgId);
+  } catch (err) {
+    console.error("Error deleting message:", err);
+  }
+});
+
+// 🧹 Clear all messages in a chat
+socket.on("clearChat", async (chatId) => {
+  try {
+    await Message.deleteMany({ chatId });
+    io.emit("chatCleared", chatId); // ✅ renamed event to avoid conflict
+    console.log(`Cleared chat: ${chatId}`);
+  } catch (err) {
+    console.error("Error clearing chat:", err);
+  }
+});
+
   
 
   socket.on("disconnect",()=> {
@@ -76,7 +101,7 @@ io.on("connection", (socket) => {
     console.log("User disconnected:",onlineUsers);
 
               //send active users
-              io.emit("getUsers",onlineUsers);
+              io.emit("getOnlineUsers",onlineUsers);
 
   })
 });

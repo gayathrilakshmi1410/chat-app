@@ -57,9 +57,29 @@ body{
 .chat-box {
   height: calc(90vh - 3rem);
   overflow-y: auto;
-  background: rgb(25, 25, 25);
+  background: rgb(107, 109, 110);
   border-radius: 10px;
 }
+
+
+/* 🧹 Clear Chat button */
+.clear-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 77, 77, 0.6);
+  color: #ff4d4d;
+  border-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.clear-btn:hover {
+  background: #ff4d4d;
+  color: white;
+  border-color: #ff4d4d;
+}
+
 
 .messages-box {
   flex: 1;
@@ -69,9 +89,10 @@ body{
 .chat-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.75rem;
+  justify-content: space-between; /* allows name + button to align nicely */
+  padding: 0.75rem 1rem;
   background: rgb(30, 30, 30);
+  border-bottom: 1px solid rgb(60, 60, 60);
 }
 
 /* Messages */
@@ -81,15 +102,43 @@ body{
   padding: 0 2rem;
 }
 
+/* Message container */
 .message {
+  position: relative;
   background: #282828;
-  padding: 0.75rem;
-  border-radius: 5px;
-  max-width: 50%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  max-width: 60%;
+  word-wrap: break-word;
 }
-
+/* Your messages (right side) */
 .message.self {
   background: #00bd9b;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+/* ❌ Delete button (visible only on hover) */
+.delete-btn {
+  position: absolute;
+  top: 5px;
+  right: -25px;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.message.self:hover .delete-btn {
+  opacity: 1;
+  color: #ff3333;
+}
+
+.delete-btn:hover {
+  color: #e60000;
 }
 
 .message-footer {

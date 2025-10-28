@@ -32,7 +32,7 @@ export const ChatContextProvider=({children,user})=>{
             newSocket.disconnect();
         }
 
-    },[user]);
+    },[]);
 
     //add online users
     useEffect(()=>{
@@ -49,14 +49,13 @@ export const ChatContextProvider=({children,user})=>{
     },[socket]);
 
    // send messsage
-       useEffect(()=>{
-        if(socket === null) return;
+ useEffect(() => {
+  if (!socket || !newMessage) return;
+  const recipientId = currentChat?.members?.find((id) => id !== user?._id);
+  if (!recipientId) return;
+  socket.emit("sendMessage", { ...newMessage, recipientId });
+}, [newMessage, socket, currentChat, user]);
 
-            const recipientId=currentChat?.members?.find((id)=> id !== user?._id);
-
-
-       socket.emit("sendMessage",{...newMessage,recipientId});
-    },[newMessage]);
 
     //receive message and notification
     useEffect(()=>{
@@ -242,6 +241,27 @@ export const ChatContextProvider=({children,user})=>{
         setNotifications(mNotifications)
     },[])
 
+    // Delete a single message (frontend)
+useEffect(() => {
+  if (!socket) return;
+
+  socket.on("messageDeleted", (msgId) => {
+    setMessages((prev) => prev.filter((msg) => msg._id !== msgId));
+  });
+
+  socket.on("chatCleared", (chatId) => {
+    if (currentChat?._id === chatId) {
+      setMessages([]); // empty chat window
+    }
+  });
+
+  return () => {
+    socket.off("messageDeleted");
+    socket.off("clearChat");
+  };
+}, [socket, currentChat]);
+
+
     return(
         <ChatContext.Provider
         value={{
@@ -262,6 +282,8 @@ export const ChatContextProvider=({children,user})=>{
             markAllNotificationsAsRead,
             markNotifificationAsRead,
             markThisUserNotificationsAsRead,
+            setMessages,
+            socket,
 
         
         }}
