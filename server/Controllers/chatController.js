@@ -29,20 +29,26 @@ const createChat=async(req,res)=>{
     
 };
 
-const findUserChats=async(req,res)=>{
-    const userId=req.params.userId;
+// ✅ Get all chats for a user and exclude chats with deleted users
+const findUserChats = async (req, res) => {
+  const userId = req.params.userId;
 
-    try{
-        const chats=await chatModel.find({
-             members:{$in: [userId]},
-           
-        })
+  try {
+    // Find all chats that include this user
+    let chats = await chatModel
+      .find({ members: { $in: [userId] } })
+      .populate("members", "-password");
 
-        res.status(200).json(chats);
-    }catch(error){
-          console.log(error)
-        res.status(500),json(error);
-    }
+    // ✅ Filter out chats where one or more members are missing (user deleted)
+    chats = chats.filter(
+      (chat) => chat.members.length === 2 && chat.members.every((m) => m !== null)
+    );
+
+    res.status(200).json(chats);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 };
 
 const findChat=async(req,res)=>{

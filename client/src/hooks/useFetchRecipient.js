@@ -1,30 +1,30 @@
-import { useEffect,useState} from "react";
+import { useEffect, useState } from "react";
 import { baseUrl, getRequest } from "../utils/services";
 
-export const useFetchRecipientUser=(chat,user)=>{
-    const [recipientUser,setRecipientUser]=useState(null);
-    const [error,setError]=useState(null);
+export const useFetchRecipientUser = (chat, user) => {
+  const [recipientUser, setRecipientUser] = useState(null);
+  const [error, setError] = useState(null);
 
-    const recipientId=chat?.members?.find((id)=> id !== user?._id)
+  const recipientId = chat?.members?.find((id) => id !== user?._id);
 
-    useEffect(()=>{
+  useEffect(() => {
+    const getUser = async () => {
+      if (!recipientId) return;
 
-        const getUser=async()=>{
+      const response = await getRequest(`${baseUrl}/users/find/${recipientId}`);
 
-            if(!recipientId) return null;
+      // ✅ Safely handle when user doesn't exist or response is null
+      if (!response || response.error) {
+        setError(response?.error || "User not found or deleted");
+        setRecipientUser(null);
+        return;
+      }
 
-            const response=await getRequest(`${baseUrl}/users/find/${recipientId}`);
+      setRecipientUser(response);
+    };
 
-            if (response.error){
-                return setError(error);
+    getUser();
+  }, [recipientId]);
 
-            }
-
-            setRecipientUser(response);
-        };
-
-        getUser();
-    },[recipientId]);
-
-    return {recipientUser};
+  return { recipientUser, error };
 };

@@ -8,9 +8,13 @@ import { useFetchLatestMessage } from "../../hooks/useFetchLatestMessage";
 import moment from "moment";
 
 const UserChat=({chat,user})=>{
-    const {recipientUser}=useFetchRecipientUser(chat,user);
+    const {recipientUser,error}=useFetchRecipientUser(chat,user);
     const {onlineUsers,notifications,markThisUserNotificationsAsRead}=useContext(ChatContext);
     const {latestMessage}=useFetchLatestMessage(chat)
+
+    
+  // ✅ if user doesn't exist (deleted) or API failed, skip rendering this chat
+  if (error || !recipientUser) return null;
 
     const unreadNotifications=unreadNotificationsFunc(notifications)
     const thisUserNotifications=unreadNotifications?.filter(
@@ -19,16 +23,14 @@ const UserChat=({chat,user})=>{
 
     const isOnline= onlineUsers?.some((user)=> user.userId === recipientUser?._id);
 
-    const truncateText=(text)=>{
-        let shortText=text.substring(0,20);
-
-        if(text.length > 20){
-            shortText=shortText+"..."
-        }
-
-        return shortText;
+   const truncateText = (text) => {
+    if (!text) return "";
+    let shortText = text.substring(0, 20);
+    if (text.length > 20) {
+      shortText = shortText + "...";
     }
-
+    return shortText;
+  };
 
   
     return (
