@@ -6,6 +6,7 @@ import { Stack } from "react-bootstrap";
 import moment from "moment";
 import InputEmoji from "react-input-emoji";
 import { useState } from "react";
+import { formatMessageTime } from "../../utils/formatMessageTime";
 
 const ChatBox=()=>{
     const {user}=useContext(AuthContext);
@@ -75,7 +76,10 @@ socket.on("chatCleared", (chatId) => {
         <Stack gap={3} className="messages">
             {messages && messages.map((message,index)=> (
             <Stack key={index} className={`${message?.senderId === user?._id ? "message self align-self-end flex-grow-0" : "message align-self-start flex-grow-0"}`} ref={scroll}>
-                <span>{message.text}</span>
+                <span style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+  {message.text}
+</span>
+
                  {/* 🔹 Delete Button for your own messages */}
           {message.senderId === user?._id && (
             <button
@@ -87,17 +91,37 @@ socket.on("chatCleared", (chatId) => {
             </button>
           )}
 
-                <span className="message-footer">{moment(message.createdAt).calendar()}</span>
+                <span className="message-footer">{formatMessageTime(message.createdAt)}</span>
+
             </Stack>))}
         </Stack>
         <Stack direction="horizontal" gap={3} className="chat-input flex-grow-0" >
-            <InputEmoji
+<textarea
   value={textMessage}
-  onChange={setTextMessage}
+  onChange={(e) => setTextMessage(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (textMessage && textMessage.trim() !== "") {
+        sendTextMessage(textMessage, user, currentChat._id, setTextMessage);
+      }
+    }
+  }}
   placeholder="Type your message here..."
-  fontFamily="nunito"
-  borderColor="rgba(72,112,223,0.2)"
+  style={{
+    width: "100%",
+    borderRadius: 24,
+    padding: "12px 16px",
+    resize: "none",
+    minHeight: 45,
+    maxHeight: 120,
+    overflowY: "auto",
+    background: "white",
+  }}
 />
+
+
+
 
             <button className="send-btn" onClick={()=>sendTextMessage(textMessage,user,currentChat._id,setTextMessage)}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-send-fill" viewBox="0 0 16 16">

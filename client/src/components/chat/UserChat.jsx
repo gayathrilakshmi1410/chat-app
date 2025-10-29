@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { ChatContext } from "../../context/ChatContext";
 import { unreadNotificationsFunc } from "../../utils/unreadNotifications";
 import { useFetchLatestMessage } from "../../hooks/useFetchLatestMessage";
+import { formatMessageTime } from "../../utils/formatMessageTime";
 import moment from "moment";
 
 const UserChat=({chat,user})=>{
@@ -53,7 +54,7 @@ const UserChat=({chat,user})=>{
             </div>
              </div>
              <div className="d-flex flex-column align-items-end">
-                <div className="date">{moment(latestMessage?.createdAt).calendar()}</div>
+                <div className="date">{latestMessage && formatMessageTime(latestMessage.createdAt)}</div>
                 <div className={thisUserNotifications?.length >0 ? "this-user-notifications" : ""}>{thisUserNotifications?.length > 0 ? thisUserNotifications?.length : ''}</div>
                 <span className={isOnline ? "user-online" : ""}></span>
              </div>

@@ -37,8 +37,8 @@ body{
 
 .user-card .text,
 .user-card .date {
-  font-size: 14px;
-  
+  font-size: 0.8rem;
+  color: #aaa;
 }
 
 .user-online {
@@ -105,17 +105,18 @@ body{
 /* Message container */
 .message {
   position: relative;
-  background: #282828;
-  padding: 0.75rem 1rem;
+  max-width: 70%;
+  padding: 10px 14px;
   border-radius: 10px;
-  max-width: 60%;
-  word-wrap: break-word;
+  background-color: #111914; /* WhatsApp green for sent */
+  color: white;
 }
 /* Your messages (right side) */
 .message.self {
   background: #00bd9b;
   align-self: flex-end;
   border-bottom-right-radius: 2px;
+    background-color: #005c4b;
 }
 
 /* ❌ Delete button (visible only on hover) */
@@ -142,11 +143,12 @@ body{
 }
 
 .message-footer {
-  font-size: 12px;
-  align-self: flex-end;
-  font-weight: 400;
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: right;
+  margin-top: 4px;
 }
-
 /* Chat Input  */
 .chat-input {
   width: 100%;
